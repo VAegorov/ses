@@ -23,6 +23,23 @@ function generatorSalt()
    return $salt;
 }
 
+//авторизация
+if (isset($_POST['authoriz'])) {
+    $login = mysqli_real_escape_string($link, trim($_POST['login']));
+    $query = sprintf("SELECT * FROM authoriz WHERE login='%s'", $login);
+    $r = mysqli_query($link, $query);
+    $user = mysqli_fetch_assoc($r);
+    if (!empty($user)) {
+        if ($user['password'] === md5(trim($_POST['password']).$user['salt'])) {
+            //стартуем сессию и делаем авторизацию
+            echo "Добро пожаловать";
+        } else echo "Неправильный логин или пароль.";
+    } else {
+        //на самом деле такого логина нет, но пишем для введения в заблуждение злоумышленника
+        echo "Неправильный логин или пароль.";
+    }
+}
+
 //регистрация
 if (isset($_POST['submit'])) {
     if (isset($_POST['checkbox'])) {
@@ -56,7 +73,7 @@ if (isset($_POST['submit'])) {
                 $age = mysqli_real_escape_string($link, trim($_POST['age']));
                 $city = mysqli_real_escape_string($link, trim($_POST['city']));
                 $language = mysqli_real_escape_string($link, trim($_POST['language']));
-                $salt = generatorSalt();//add
+                $salt = generatorSalt();
                 $password = md5(trim($_POST['password']).$salt);
                 $date = date('Y-m-d H:i:s');
                 $query = sprintf('INSERT INTO authoriz (name, surname, age, city, language, password, email, login,
@@ -94,4 +111,11 @@ if (isset($_POST['submit'])) {
     <p>Повторите пароль <input type="password" name="password2"></p>
     <p>Если желаете сгенерировать пароль, отметьте: <input type="checkbox" name="checkbox"></p>
     <input type="submit" name="submit">
+</form>
+
+<h1>Авторизация пользователя</h1>
+<form action="" method="POST">
+    <p>Введите логин <input type="text" name="login"></p>
+    <p>Введите пароль <input type="password" name="password"></p>
+    <input type="submit" name="authoriz">
 </form>
