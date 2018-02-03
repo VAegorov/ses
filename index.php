@@ -12,6 +12,18 @@ function setPassword()
     return $d = substr($c, 2, 8);
 }
 
+//генератор соли
+function generatorSalt()
+{
+   $salt = '';
+   $saltlength = 8;
+   for ($i = 0; $i < $saltlength; $i++) {
+       $salt .= chr(mt_rand(33, 126));
+   }
+   return $salt;
+}
+
+//регистрация
 if (isset($_POST['submit'])) {
     if (isset($_POST['checkbox'])) {
         $pass = $_POST['password'] = $_POST['password2'] = setPassword();
@@ -44,11 +56,12 @@ if (isset($_POST['submit'])) {
                 $age = mysqli_real_escape_string($link, trim($_POST['age']));
                 $city = mysqli_real_escape_string($link, trim($_POST['city']));
                 $language = mysqli_real_escape_string($link, trim($_POST['language']));
-                $password = mysqli_real_escape_string($link, trim($_POST['password']));
+                $salt = generatorSalt();//add
+                $password = md5(trim($_POST['password']).$salt);
                 $date = date('Y-m-d H:i:s');
                 $query = sprintf('INSERT INTO authoriz (name, surname, age, city, language, password, email, login,
-                          date) VALUES ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s")', $name, $surname,
-                            $age, $city, $language, $password, $email, $login, $date);
+                          date, salt) VALUES ("%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s", "%s")', $name, $surname,
+                            $age, $city, $language, $password, $email, $login, $date, $salt);
                 $r = mysqli_query($link, $query);
                 if (mysqli_affected_rows($link)) {
                     //регистрация прошла успешно
