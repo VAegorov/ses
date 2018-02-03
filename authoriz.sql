@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Фев 02 2018 г., 21:10
+-- Время создания: Фев 03 2018 г., 10:35
 -- Версия сервера: 10.1.21-MariaDB
 -- Версия PHP: 7.1.1
 
@@ -33,6 +33,7 @@ CREATE TABLE `authoriz` (
   `email` varchar(64) NOT NULL,
   `login` varchar(64) NOT NULL,
   `password` varchar(64) NOT NULL,
+  `salt` varchar(64) NOT NULL,
   `date` datetime NOT NULL,
   `city` varchar(64) NOT NULL,
   `age` date NOT NULL,
@@ -43,11 +44,12 @@ CREATE TABLE `authoriz` (
 -- Дамп данных таблицы `authoriz`
 --
 
-INSERT INTO `authoriz` (`id`, `name`, `surname`, `email`, `login`, `password`, `date`, `city`, `age`, `language`) VALUES
-(1, 'василий', 'егоров', 'kot2046@gmail.com', 'kot2046', 'qweasd', '2018-02-02 01:13:00', 'Псков', '1974-06-12', 'русский'),
-(2, 'юрий', 'петров', 'kaka$gmail.com', 'yri', 'qweasd', '0000-00-00 00:00:00', 'псков', '1975-12-15', 'русский'),
-(3, 'Дмитрий', 'Васильев', 'frah@gmail.com', 'frah', '123', '2018-02-02 11:19:03', 'псков', '1974-06-10', 'русский'),
-(4, 'fdds', 'sdfg', 'sdfg', 'fgr', 'ac6475ae', '2018-02-02 12:16:58', 'sdfg', '2018-02-20', 'sdfg');
+INSERT INTO `authoriz` (`id`, `name`, `surname`, `email`, `login`, `password`, `salt`, `date`, `city`, `age`, `language`) VALUES
+(1, 'василий', 'егоров', 'kot2046@gmail.com', 'kot2046', 'qweasd', '', '2018-02-02 01:13:00', 'Псков', '1974-06-12', 'русский'),
+(2, 'юрий', 'петров', 'kaka$gmail.com', 'yri', 'qweasd', '', '0000-00-00 00:00:00', 'псков', '1975-12-15', 'русский'),
+(3, 'Дмитрий', 'Васильев', 'frah@gmail.com', 'frah', '123', '', '2018-02-02 11:19:03', 'псков', '1974-06-10', 'русский'),
+(4, 'fdds', 'sdfg', 'sdfg', 'fgr', 'ac6475ae', '', '2018-02-02 12:16:58', 'sdfg', '2018-02-20', 'sdfg'),
+(5, 'dd', 'asd', 'asd', '123', '78b2c482fa2b47fdc07f8bf9eb18c3eb', 'P147)?BeR', '2018-02-03 09:53:15', 'ASd', '2018-02-05', 'Русский');
 
 --
 -- Индексы сохранённых таблиц
@@ -69,7 +71,7 @@ ALTER TABLE `authoriz`
 -- AUTO_INCREMENT для таблицы `authoriz`
 --
 ALTER TABLE `authoriz`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
