@@ -3,6 +3,12 @@
 $link = mysqli_connect('localhost', 'root', '', 'test');
 mysqli_set_charset($link, 'utf8');
 
+//которая принимает логин, пароль и соль для пользователя, а возвращает соленый пароль
+function salt($login, $password, $salt)
+{
+    return md5(trim($password).$salt);
+}
+
 //генератор паролей
 function setPassword()
 {
@@ -103,18 +109,18 @@ if (isset($_POST['submit'])) {
 ?>
 <h1>Регистрация пользователя</h1>
 <form action="" method="POST">
-    <p>Введите имя <input type="text" name="name"></p>
-    <p>Введите фамилию <input type="text" name="surname"></p>
-    <p>Введите  дату рождения <input type="date" name="age"></p>
-    <p>Введите город <input type="text" name="city"></p>
+    <p>Введите имя <input type="text" name="name" value="<?php if (isset($_POST['name'])) echo "{$_POST['name']}"; ?>"></p>
+    <p>Введите фамилию <input type="text" name="surname" value="<?php if (isset($_POST['surname'])) echo "{$_POST['surname']}"; ?>"></p>
+    <p>Введите  дату рождения <input type="date" name="age" value="<?php if (isset($_POST['age'])) echo "{$_POST['age']}"; ?>"></p>
+    <p>Введите город <input type="text" name="city" value="<?php if (isset($_POST['city'])) echo "{$_POST['city']}"; ?>"></p>
     <p>Выберите Ваш язык </p><select name="language">
-        <option value="Русский">Русский</option>
-        <option value="Английский">Английский</option>
-        <option value="Немецкий">Немецкий</option>
-        <option value="Французский">Французский</option>
+        <option value="Русский" <?php if(isset($_POST['language']) && $_POST['language'] == 'Русский') echo 'selected'; ?>>Русский</option>
+        <option value="Английский" <?php if(isset($_POST['language']) && $_POST['language'] == 'Английский') echo 'selected'; ?>>Английский</option>
+        <option value="Немецкий" <?php if(isset($_POST['language']) && $_POST['language'] == 'Немецкий') echo 'selected'; ?>>Немецкий</option>
+        <option value="Французский" <?php if(isset($_POST['language']) && $_POST['language'] == 'Французский') echo 'selected'; ?>>Французский</option>
     </select>
-    <p>Введите email <input type="text" name="email"></p>
-    <p>Введите желаемый логин <input type="text" name="login"></p>
+    <p>Введите email <input type="text" name="email" value="<?php if (isset($_POST['email'])) echo "{$_POST['email']}"; ?>"></p>
+    <p>Введите желаемый логин <input type="text" name="login" value="<?php if (isset($_POST['login'])) echo "{$_POST['login']}"; ?>"></p>
     <p>Введите пароль <input type="password" name="password"></p>
     <p>Повторите пароль <input type="password" name="password2"></p>
     <p>Если желаете сгенерировать пароль, отметьте: <input type="checkbox" name="checkbox"></p>
