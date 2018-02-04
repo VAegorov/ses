@@ -1,4 +1,4 @@
 <?php
-$a = 5;
-$b = NULL;
-echo $a . $b . $a;
+$a = 'hh';
+$b = true;
+if ($a == $b) echo "4654";

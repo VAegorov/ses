@@ -38,6 +38,19 @@ if (isset($_POST['authoriz'])) {
     if (!empty($user)) {
         if ($user['password'] === md5(trim($_POST['password']).$user['salt'])) {
             //стартуем сессию и делаем авторизацию
+            session_start();
+            $_SESSION['auth'] = true;
+            $_SESSION['login'] = $user['login'];
+            $_SESSION['id'] = $user['id'];
+            if (!empty($_POST['remember']) && $_POST['remember'] === '1') {
+                $ikey = generatorSalt();
+                setcookie('login', $user['login'], time() + 3600);
+                setcookie('ikey', $ikey, time() + 3600);
+                $ikey = mysqli_real_escape_string($link, $ikey);
+                $query = sprintf("UPDATE authoriz SET ikey='%s' WHERE login='%s'", $ikey, $user['login']);
+                mysqli_query($link, $query);
+
+            }
             echo "Добро пожаловать";
         } else echo "Неправильный логин или пароль.";
     } else {
@@ -160,5 +173,6 @@ if (isset($_POST['submit'])) {
 <form action="" method="POST">
     <p>Введите логин <input type="text" name="login"></p>
     <p>Введите пароль <input type="password" name="password"></p>
+    <p>Запомнить меня <input type="checkbox" name="remember" value="1"></p>
     <input type="submit" name="authoriz">
 </form>
