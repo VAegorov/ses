@@ -3,6 +3,17 @@
 $link = mysqli_connect('localhost', 'root', '', 'test');
 mysqli_set_charset($link, 'utf8');
 
+//устанавливаем стиль для input при неправильном вводе
+$style='style="background: rgba(250,210,209,0.56)"';
+$name_d = '';
+$surname_d = '';
+$age_d = '';
+$city_d = '';
+$language_d = '';
+$login_d = '';
+$email_d = '';
+$password_d = '';
+
 //принимает логин, пароль и соль для пользователя, а возвращает соленый пароль
 function salt($login, $password, $salt)
 {
@@ -28,6 +39,9 @@ function generatorSalt()
    }
    return $salt;
 }
+
+
+
 
 //авторизация
 if (isset($_POST['authoriz'])) {
@@ -57,18 +71,40 @@ if (isset($_POST['authoriz'])) {
         //на самом деле такого логина нет, но пишем для введения в заблуждение злоумышленника
         echo "Неправильный логин или пароль.";
     }
+} else {
+    session_start();
+    //var_dump($_SESSION);
+
+//начало входа на сайт
+    if (empty($_SESSION['auth']) || $_SESSION['auth'] == false) {
+        if (!empty($_COOKIE['login']) && !empty($_COOKIE['ikey'])) {
+            $ikey = mysqli_real_escape_string($link, $_COOKIE['ikey']);
+            $query = sprintf("SELECT * FROM authoriz WHERE login='%s' AND ikey='%s'", $_COOKIE['login'], $ikey);
+            //flush();
+            $result = mysqli_query($link, $query);
+            $user = mysqli_fetch_assoc($result);
+            if (!empty($user)) {
+                //Пользователь с таким cookie существует
+                $_SESSION['auth'] = true;
+                $_SESSION['login'] = $user['login'];
+                $_SESSION['id'] = $user['id'];
+                //перезаписываем cookie
+                $ikey = generatorSalt();
+                setcookie('login', $user['login'], time() + 3600);
+                setcookie('ikey', $ikey, time() + 3600);
+                $ikey = mysqli_real_escape_string($link, $ikey);
+                $query = sprintf("UPDATE authoriz SET ikey='%s' WHERE login='%s'", $ikey, $user['login']);
+                mysqli_query($link, $query);
+                //пользователь авторизован, выполняем нужный код
+                echo 'пользователь авторизован через куки, куки перезаписаны';
+            }
+        }
+    } else {
+        //пользователь авторизован по сессии, выполняем нужный код
+        echo 'пользователь авторизован по сессии';
+    }
 }
 
-$style='style="background: rgba(250,210,209,0.56)"';
-
-$name_d = '';
-$surname_d = '';
-$age_d = '';
-$city_d = '';
-$language_d = '';
-$login_d = '';
-$email_d = '';
-$password_d = '';
 
 //регистрация
 if (isset($_POST['submit'])) {
