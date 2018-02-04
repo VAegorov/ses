@@ -3,7 +3,7 @@
 $link = mysqli_connect('localhost', 'root', '', 'test');
 mysqli_set_charset($link, 'utf8');
 
-//которая принимает логин, пароль и соль для пользователя, а возвращает соленый пароль
+//принимает логин, пароль и соль для пользователя, а возвращает соленый пароль
 function salt($login, $password, $salt)
 {
     return md5(trim($password).$salt);
@@ -46,6 +46,17 @@ if (isset($_POST['authoriz'])) {
     }
 }
 
+$style='style="background: rgba(250,210,209,0.56)"';
+
+$name_d = '';
+$surname_d = '';
+$age_d = '';
+$city_d = '';
+$language_d = '';
+$login_d = '';
+$email_d = '';
+$password_d = '';
+
 //регистрация
 if (isset($_POST['submit'])) {
     if (isset($_POST['checkbox'])) {
@@ -57,21 +68,30 @@ if (isset($_POST['submit'])) {
         //все поля заполнены
         if ((strlen($_POST['password']) < 6 || strlen($_POST['password']) > 10) ||
             (strlen($_POST['login']) < 4 || strlen($_POST['login']) > 12)) {
+            $login_d = $style;
+            $password_d = $style;
             echo "Введите пароль длиной от 6 до 10 символов, логин - от 6 до 12.";
         } else {
             if ($_POST['password'] !== $_POST['password2']) {
+                $password_d = $style;
                 echo "Пароли не совпадают.";
             } else {
                 //пароли совпадают, проверяем логин и email
                 $email = mysqli_real_escape_string($link, trim($_POST['email']));
                 $query = sprintf('SELECT email FROM authoriz WHERE email="%s"', $email);
                 $r = mysqli_query($link, $query);
-                if (mysqli_num_rows($r)) $mes_email = "email";
+                if (mysqli_num_rows($r)) {
+                    $email_d = $style;
+                    $mes_email = "email";
+                }
 
                 $login = mysqli_real_escape_string($link, trim($_POST['login']));
                 $query = sprintf('SELECT email FROM authoriz WHERE login="%s"', $login);
                 $r = mysqli_query($link, $query);
-                if (mysqli_num_rows($r)) $mes_log = "логин";
+                if (mysqli_num_rows($r)) {
+                    $login_d = $style;
+                    $mes_log = "логин";
+                }
 
                 if (isset($mes_email)) echo "Указанный $mes_email занят, выберите другой.<br>";
                 if (isset($mes_log)) echo "Указанный $mes_log занят, выберите другой.<br>";
@@ -102,6 +122,15 @@ if (isset($_POST['submit'])) {
 
 
     } else {
+        if (empty($_POST['name'])) $name_d = $style;
+        if (empty($_POST['surname'])) $surname_d = $style;
+        if (empty($_POST['age'])) $age_d = $style;
+        if (empty($_POST['city'])) $city_d = $style;
+        if (empty($_POST['language'])) $language_d = $style;
+        if (empty($_POST['login'])) $login_d = $style;
+        if (empty($_POST['email'])) $email_d = $style;
+        if (empty($_POST['password'])) $password_d = $style;
+        if (empty($_POST['password2'])) $password_d = $style;
         echo "Вы не заполнили все поля";
     }
 }
@@ -109,20 +138,20 @@ if (isset($_POST['submit'])) {
 ?>
 <h1>Регистрация пользователя</h1>
 <form action="" method="POST">
-    <p>Введите имя <input type="text" name="name" value="<?php if (isset($_POST['name'])) echo "{$_POST['name']}"; ?>"></p>
-    <p>Введите фамилию <input type="text" name="surname" value="<?php if (isset($_POST['surname'])) echo "{$_POST['surname']}"; ?>"></p>
-    <p>Введите  дату рождения <input type="date" name="age" value="<?php if (isset($_POST['age'])) echo "{$_POST['age']}"; ?>"></p>
-    <p>Введите город <input type="text" name="city" value="<?php if (isset($_POST['city'])) echo "{$_POST['city']}"; ?>"></p>
-    <p>Выберите Ваш язык </p><select name="language">
+    <p>Введите имя <input type="text" name="name" <?=$name_d; ?> value="<?php if (isset($_POST['name'])) echo "{$_POST['name']}"; ?>"></p>
+    <p>Введите фамилию <input type="text" name="surname" <?=$surname_d; ?> value="<?php if (isset($_POST['surname'])) echo "{$_POST['surname']}"; ?>"></p>
+    <p>Введите  дату рождения <input type="date" name="age" <?=$age_d; ?>value="<?php if (isset($_POST['age'])) echo "{$_POST['age']}"; ?>"></p>
+    <p>Введите город <input type="text" name="city" <?=$city_d; ?> value="<?php if (isset($_POST['city'])) echo "{$_POST['city']}"; ?>"></p>
+    <p>Выберите Ваш язык </p><select name="language" <?=$language_d; ?>>
         <option value="Русский" <?php if(isset($_POST['language']) && $_POST['language'] == 'Русский') echo 'selected'; ?>>Русский</option>
         <option value="Английский" <?php if(isset($_POST['language']) && $_POST['language'] == 'Английский') echo 'selected'; ?>>Английский</option>
         <option value="Немецкий" <?php if(isset($_POST['language']) && $_POST['language'] == 'Немецкий') echo 'selected'; ?>>Немецкий</option>
         <option value="Французский" <?php if(isset($_POST['language']) && $_POST['language'] == 'Французский') echo 'selected'; ?>>Французский</option>
     </select>
-    <p>Введите email <input type="text" name="email" value="<?php if (isset($_POST['email'])) echo "{$_POST['email']}"; ?>"></p>
-    <p>Введите желаемый логин <input type="text" name="login" value="<?php if (isset($_POST['login'])) echo "{$_POST['login']}"; ?>"></p>
-    <p>Введите пароль <input type="password" name="password"></p>
-    <p>Повторите пароль <input type="password" name="password2"></p>
+    <p>Введите email <input type="text" name="email" <?=$email_d; ?>value="<?php if (isset($_POST['email'])) echo "{$_POST['email']}"; ?>"></p>
+    <p>Введите желаемый логин <input type="text" name="login" <?=$login_d; ?> value="<?php if (isset($_POST['login'])) echo "{$_POST['login']}"; ?>"></p>
+    <p>Введите пароль <input type="password" name="password"  <?=$password_d; ?>></p>
+    <p>Повторите пароль <input type="password" name="password2" <?=$password_d; ?>></p>
     <p>Если желаете сгенерировать пароль, отметьте: <input type="checkbox" name="checkbox"></p>
     <input type="submit" name="submit">
 </form>
