@@ -226,3 +226,6 @@ if (isset($_POST['submit'])) {
     <p>Запомнить меня <input type="checkbox" name="remember" value="1" <?=$checkbox_save; ?>></p>
     <input type="submit" name="authoriz">
 </form>
+
+<h3 ><a href="logout.php">Выйти.</a></h3>
+<a href="in.php">Следующая страница</a>
