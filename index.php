@@ -60,6 +60,12 @@ if (isset($_POST['authoriz'])) {
             $_SESSION['auth'] = true;
             $_SESSION['login'] = $user['login'];
             $_SESSION['id'] = $user['id'];
+            var_dump($_COOKIE);
+            if (isset($_COOKIE['date'])) {
+                $date_ago = $_COOKIE['date'];
+            }//сделать условие наличия
+            $date = date('Y-m-d H:i');
+            setcookie('date', "$date", time() + 3600 * 24 * 3);
             if (!empty($_POST['remember']) && $_POST['remember'] === '1') {
                 $ikey = generatorSalt();
                 setcookie('login', $user['login'], time() + 3600);
@@ -69,6 +75,7 @@ if (isset($_POST['authoriz'])) {
                 mysqli_query($link, $query);
 
             }
+            if (isset($date_ago)) echo "Последний раз Вы были $date_ago. <br>";
             echo "Добро пожаловать";
         } else {
             if (!empty($_POST['remember']) && $_POST['remember'] === '1') {
@@ -102,19 +109,27 @@ if (isset($_POST['authoriz'])) {
                 $_SESSION['auth'] = true;
                 $_SESSION['login'] = $user['login'];
                 $_SESSION['id'] = $user['id'];
+                $date_ago = $_COOKIE['date'];
+
                 //перезаписываем cookie
                 $ikey = generatorSalt();
                 setcookie('login', $user['login'], time() + 3600);
                 setcookie('ikey', $ikey, time() + 3600);
+                $date = date('Y-m-d H:i');
+                setcookie('date', "$date", time() + 3600 * 24 * 3);
                 $ikey = mysqli_real_escape_string($link, $ikey);
                 $query = sprintf("UPDATE authoriz SET ikey='%s' WHERE login='%s'", $ikey, $user['login']);
                 mysqli_query($link, $query);
                 //пользователь авторизован, выполняем нужный код
+                if (isset($date_ago)) echo "Последний раз Вы были $date_ago. <br>";
                 echo 'пользователь авторизован через куки, куки перезаписаны';
             }
         }
     } else {
         //пользователь авторизован по сессии, выполняем нужный код
+        var_dump($_COOKIE);
+        $date_ago = $_COOKIE['date'];
+        echo "Последний раз Вы были $date_ago. <br>";
         echo 'пользователь авторизован по сессии';
     }
 }
