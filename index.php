@@ -14,6 +14,10 @@ $login_d = '';
 $email_d = '';
 $password_d = '';
 
+
+$checkbox_save = '';
+$login_save = '';
+
 //принимает логин, пароль и соль для пользователя, а возвращает соленый пароль
 function salt($login, $password, $salt)
 {
@@ -66,9 +70,15 @@ if (isset($_POST['authoriz'])) {
 
             }
             echo "Добро пожаловать";
-        } else echo "Неправильный логин или пароль.";
+        } else {
+            $checkbox_save = 'checked="checked"';
+            $login_save = "value=\"{$_POST['login']}\"";
+            echo "Неправильный логин или пароль.";
+        }
     } else {
         //на самом деле такого логина нет, но пишем для введения в заблуждение злоумышленника
+        $checkbox_save = 'checked="checked"';
+        $login_save = "value=\"{$_POST['login']}\"";
         echo "Неправильный логин или пароль.";
     }
 } else {
@@ -207,8 +217,8 @@ if (isset($_POST['submit'])) {
 
 <h1>Авторизация пользователя</h1>
 <form action="" method="POST">
-    <p>Введите логин <input type="text" name="login"></p>
+    <p>Введите логин <input type="text" name="login" <?=$login_save; ?>></p>
     <p>Введите пароль <input type="password" name="password"></p>
-    <p>Запомнить меня <input type="checkbox" name="remember" value="1"></p>
+    <p>Запомнить меня <input type="checkbox" name="remember" value="1" <?=$checkbox_save; ?>></p>
     <input type="submit" name="authoriz">
 </form>
