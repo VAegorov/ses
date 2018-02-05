@@ -71,15 +71,19 @@ if (isset($_POST['authoriz'])) {
             }
             echo "Добро пожаловать";
         } else {
-            $checkbox_save = 'checked="checked"';
+            if (!empty($_POST['remember']) && $_POST['remember'] === '1') {
+                $checkbox_save = 'checked="checked"';
+            }
             $login_save = "value=\"{$_POST['login']}\"";
             echo "Неправильный логин или пароль.";
         }
     } else {
         //на самом деле такого логина нет, но пишем для введения в заблуждение злоумышленника
-        $checkbox_save = 'checked="checked"';
+        if (!empty($_POST['remember']) && $_POST['remember'] === '1') {
+            $checkbox_save = 'checked="checked"';
+        }
         $login_save = "value=\"{$_POST['login']}\"";
-        echo "Неправильный логин или пароль.";
+        echo "Неправильный логин или пароль."; 
     }
 } else {
     session_start();
